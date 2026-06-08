@@ -25,7 +25,7 @@ Sekka is being built to fix that.
 |---------|---------|
 | **Trip Planner** | Fastest / Cheapest / Fewest Transfers — three distinct routing modes |
 | **Metro Navigator** | All 84 stations across 3 lines with zone-based fare calculation |
-| **Routes Browser** | 573+ bus and microbus routes searchable by number or destination |
+| **Routes Browser**    | 672 bus and microbus routes searchable by number or destination      |
 | **Microbus Stations** | 27 مواقف hubs with full destination lists |
 | **Bilingual** | Full Arabic/English interface |
 | **Offline-first** | Core functionality works without a network connection |
@@ -40,7 +40,7 @@ Sekka is being built to fix that.
 | Database | Firebase Firestore (remote config + version-gated delivery) |
 | Offline cache | SharedPreferences + bundled JSON asset |
 | Routing engine | Custom Dijkstra implementation |
-| Data format | `routely_data.json` — 3.4 MB master transit dataset |
+| Data format    | Master transit dataset — 7.7 MB, 17,274 graph edges across 4 transport modes |
 
 ---
 
