@@ -69,7 +69,7 @@ Geocoding uses **Nominatim** (OpenStreetMap's geocoding API):
 }
 ```
 
-Current geocoding coverage: **9,117 / 13,012 slots (70.1%)**
+Current geocoding coverage: **11,105 / 12,994 slots (85.5%)**
 
 ---
 
@@ -101,15 +101,57 @@ Cairo-local destinations are being geocoded in Phase 1 of the data roadmap.
 
 ---
 
-## Output: routely_data.json
+## Metro Transfer Matching
 
-The final output of the pipeline is `routely_data.json` — a single 3.4 MB JSON file:
+The pipeline includes a bus-stop-to-metro-station proximity matching pass:
 
-| Key | Contents |
-|-----|---------|
-| `stops[]` | 19 corridor stops with GPS |
-| `routes[]` | 7 corridor routes |
-| `edges[]` | 30 Dijkstra edges |
-| `metro{}` | 84 stations, 3 lines, zone pricing |
-| `external_routes[]` | 666 bus/minibus routes with stop_coordinates |
-| `microbus_stops[]` | 27 مواقف hubs with destinations |
+1. For each bus stop with coordinates, compute distance to all 84 metro stations
+2. Flag pairs within 800 m as candidates — 160 suspect pairs identified
+3. Each pair reviewed with LINK / REVIEW / SKIP decision in Excel
+4. Confirmed LINK pairs stamped as `metro_stations_nearby` on their routes
+5. Result: 1,495 confirmed transfer links across 509 of 672 routes
+
+---
+
+## Graph Construction
+
+The normalized, geocoded, transfer-linked data is compiled into a
+stop-centric multimodal graph:
+
+| Node type        | Count | Description                          |
+|------------------|-------|--------------------------------------|
+| `bus_stop`       | 763   | External bus/minibus route stops     |
+| `metro_station`  | 80    | Metro stations with coordinates      |
+| `microbus_hub`   | 8     | Geocoded microbus departure hubs     |
+| **Total**        | **851** |                                    |
+
+**Edges — 17,274 total:**
+
+| Mode       | Count  | Description                          |
+|------------|--------|--------------------------------------|
+| `bus`      | 13,570 | Bus route ride edges                 |
+| `minibus`  | 3,524  | Minibus route ride edges             |
+| `metro`    | 162    | Metro ride edges (bidirectional)     |
+| `microbus` | 18     | Microbus hub edges                   |
+
+All ride edges carry: `distance_m`, `duration_min`, `price_egp` (null
+where fare data is pending). Walk/transfer edges are generated
+dynamically at query time, not pre-computed.
+
+---
+
+## Output: Transit Dataset
+
+The final output of the pipeline is a single master transit dataset
+(~7.7 MB JSON):
+
+| Key                    | Contents                                              |
+|------------------------|-------------------------------------------------------|
+| `stops[]`              | 19 corridor stops with GPS                            |
+| `routes[]`             | 7 corridor routes                                     |
+| `edges[]`              | 30 Dijkstra edges (corridor)                          |
+| `metro{}`              | 84 stations, 3 lines, zone pricing                    |
+| `external_routes[]`    | 672 bus/minibus routes with stop_coordinates          |
+| `microbus_stops[]`     | 27 مواقف hubs with destinations                       |
+| `graph_nodes[]`        | 851 nodes (763 bus + 80 metro + 8 microbus)           |
+| `graph_edges[]`        | 17,274 ride edges across all transport modes          |
