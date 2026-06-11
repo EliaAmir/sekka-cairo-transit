@@ -106,7 +106,7 @@ Raw source data (CTA PDFs + scraped web sources) goes through a 3-step normaliza
 
 ## Status & Waitlist
 
-> **In Development — waitlist open**
+> **In Development — waitlist open with +2000 response**
 
 [Join the waitlist →](https://forms.gle/1vphnqdxnxRtGGxH7)
 
